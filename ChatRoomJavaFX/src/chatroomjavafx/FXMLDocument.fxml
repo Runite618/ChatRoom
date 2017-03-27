@@ -6,9 +6,16 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="200" prefWidth="320" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chatroomjavafx.FXMLDocumentController">
+<AnchorPane id="AnchorPane" prefHeight="475.0" prefWidth="566.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="chatroomjavafx.FXMLDocumentController">
     <children>
-        <Button layoutX="126" layoutY="90" text="Click Me!" onAction="#handleButtonAction" fx:id="button" />
-        <Label layoutX="126" layoutY="120" minHeight="16" minWidth="69" fx:id="label" />
+        <Label fx:id="label" layoutX="126" layoutY="120" minHeight="16" minWidth="69" />
+      <TableView layoutX="36.0" layoutY="29.0" prefHeight="407.0" prefWidth="81.0">
+        <columns>
+          <TableColumn fx:id="users" text="Users" />
+        </columns>
+      </TableView>
+      <TextField fx:id="chatRoom" alignment="CENTER" layoutX="134.0" layoutY="29.0" prefHeight="324.0" prefWidth="417.0" text="Chat message across all users" />
+      <TextField fx:id="chatMessage" alignment="CENTER" layoutX="134.0" layoutY="371.0" prefHeight="65.0" prefWidth="358.0" text="Enter chat message here" />
+      <Button fx:id="send" layoutX="499.0" layoutY="391.0" mnemonicParsing="false" text="Send" />
     </children>
 </AnchorPane>
