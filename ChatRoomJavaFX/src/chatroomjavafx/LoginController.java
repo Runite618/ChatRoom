@@ -92,7 +92,7 @@ public class LoginController implements Initializable {
         fxmlLoader.setControllerFactory(new Callback<Class<?>, Object>() {
             @Override
             public Object call(Class<?> controllerClass) {
-                if (controllerClass == FXMLDocumentController.class) {
+                if (controllerClass == LoginController.class) {
                     FXMLDocumentController controller = new FXMLDocumentController();
                     // Edit object variables here.
                     return controller;

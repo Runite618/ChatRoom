@@ -5,6 +5,7 @@
  */
 package chatroomjavafx;
 
+import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,22 +17,32 @@ import javafx.stage.Stage;
  * @author matth
  */
 public class ChatRoomJavaFX extends Application {
-    
+
     @Override
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));
-        
+
         Scene scene = new Scene(root);
-        
+
         stage.setScene(scene);
         stage.show();
+
+        ChatServer chatServer = new ChatServer();
+        chatServer.connectToServer();
     }
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         launch(args);
+
+        ChatClient client = null;
+        if (args.length != 2) {
+            System.out.println("Usage: java ChatClient host port");
+        } else {
+            client = new ChatClient(args[0], Integer.parseInt(args[1]));
+        }
     }
-    
+
 }
