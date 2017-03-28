@@ -64,7 +64,7 @@ public class FXMLDocumentController implements Initializable {
 //                chatRoom.setText(userInput);
 //                chatRoom.setText("echo: " + in.readLine());
 //            }
-        ChatServer chatServer = new ChatServer();
-        chatServer.connectToServer();
+//        ChatServer chatServer = new ChatServer();
+//        chatServer.connectToServer();
     }
 }

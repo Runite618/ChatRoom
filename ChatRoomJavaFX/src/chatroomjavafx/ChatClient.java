@@ -1,31 +1,35 @@
 package chatroomjavafx;
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
 
 public class ChatClient {
 
     private Socket socket;
-    private DataInputStream console;
+    private BufferedReader console;
     private DataOutputStream streamOut;
-
+    
     public ChatClient(String serverName, int serverPort) throws IOException {
         System.out.println("Establishing connection. Please wait ...");
         socket = new Socket(serverName, serverPort);
         System.out.println("Connected: " + socket);
         String line = "";
+        start();
         while (!line.equals(".bye")) {
-            line = console.readUTF();
+            line = console.readLine();
             streamOut.writeUTF(line);
             streamOut.flush();
         }
+        stop();
     }
 
     public void start() throws IOException {
-        console = new DataInputStream(System.in);
         streamOut = new DataOutputStream(socket.getOutputStream());
+        console   = new BufferedReader(new InputStreamReader(System.in));
     }
 
     public void stop() throws IOException {
@@ -38,5 +42,10 @@ public class ChatClient {
         if (socket != null) {
             console.close();
         }
+    }
+    
+    public static void main(String[] args) throws IOException
+    {
+       ChatClient chatClient = new ChatClient("localhost", 1030);
     }
 }

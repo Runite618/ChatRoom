@@ -18,31 +18,23 @@ import javafx.stage.Stage;
  */
 public class ChatRoomJavaFX extends Application {
 
-    @Override
-    public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));
+   @Override
+   public void start(Stage stage) throws Exception {
+      Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));
 
-        Scene scene = new Scene(root);
+      Scene scene = new Scene(root);
 
-        stage.setScene(scene);
-        stage.show();
+      stage.setScene(scene);
+      stage.show();
+   }
 
-        ChatServer chatServer = new ChatServer();
-        chatServer.connectToServer();
-    }
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws IOException {
-        launch(args);
-
-        ChatClient client = null;
-        if (args.length != 2) {
-            System.out.println("Usage: java ChatClient host port");
-        } else {
-            client = new ChatClient(args[0], Integer.parseInt(args[1]));
-        }
-    }
+   /**
+    * @param args the command line arguments
+    */
+   public static void main(String[] args) throws IOException {
+      ChatClient chatClient = new ChatClient("localhost", 135);
+      ChatServer chatServer = new ChatServer(135);
+      launch(args);
+   }
 
 }

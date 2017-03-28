@@ -13,44 +13,47 @@ import java.util.logging.Logger;
 
 public class ChatServer {
 
-        private DataInputStream streamIn;
-        private Socket clientSocket;
-        
-        public void connectToServer() {
-            try {
-                int portNumber = 7;
+   private DataInputStream streamIn;
+   private Socket clientSocket;
+   private ServerSocket serverSocket;
 
-                ServerSocket serverSocket = new ServerSocket(portNumber);
-                Socket clientSocket = serverSocket.accept();
-                ChatClient chatClient = new ChatClient("localhost", 7);
-                chatClient.start();
-                chatClient.stop();
-                open();
-                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                boolean done = false;
-                while (in.ready()) {
-                    String line = in.readLine();
-                    System.out.println(line);
-                    done = line.equals(".bye");
-                }
-                close();
-            } catch (IOException ex) {
-                Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+   public ChatServer(int portNumber) {
+      try {
+         System.out.println("Binding to port " + portNumber + ", please wait  ...");
+         serverSocket = new ServerSocket(portNumber);
+         System.out.println("Server started: " + serverSocket);
+         System.out.println("Waiting for a client ..."); 
+         clientSocket = serverSocket.accept();
+         System.out.println("Client accepted: " + clientSocket);
+         open();
+         boolean done = false;
+         while (!done) {
+            String line = streamIn.readUTF();
+            System.out.println(line);
+            done = line.equals(".bye");
+         }
+         close();
+      } catch (IOException ex) {
+         Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
 
-            }
-        }
+      }
+   }
 
-        public void open() throws IOException {
-            streamIn = new DataInputStream(new BufferedInputStream(clientSocket.getInputStream()));
-        }
+   public void open() throws IOException {
+      streamIn = new DataInputStream(new BufferedInputStream(clientSocket.getInputStream()));
+   }
 
-        public void close() throws IOException {
-            if (clientSocket != null) {
-                clientSocket.close();
-            }
-            if (streamIn != null) {
-                streamIn.close();
-            }
-        }
-    }
+   public void close() throws IOException {
+      if (clientSocket != null) {
+         clientSocket.close();
+      }
+      if (streamIn != null) {
+         streamIn.close();
+      }
+   }
+   
+   public static void main(String[] args)
+   {
+      ChatServer server = new ChatServer(1030);
+   }
+}
