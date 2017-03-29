@@ -6,6 +6,7 @@
 package chatroomjavafx;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -18,6 +19,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -69,10 +71,10 @@ public class LoginController implements Initializable {
                     Parent root = null;
 
                     UserName userName = new UserName(userField.getText());
-
+                    
                     stage = (Stage) enterChatRoom.getScene().getWindow();
                     try {
-                        root = controllerFactory(userName).load();
+                        root = (Parent) controllerFactory(userName).load(this.getClass().getResourceAsStream("FXMLDocument.fxml"));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -92,9 +94,10 @@ public class LoginController implements Initializable {
         fxmlLoader.setControllerFactory(new Callback<Class<?>, Object>() {
             @Override
             public Object call(Class<?> controllerClass) {
-                if (controllerClass == LoginController.class) {
+                if (controllerClass == FXMLDocumentController.class) {
                     FXMLDocumentController controller = new FXMLDocumentController();
                     // Edit object variables here.
+                    controller.setUser(userName);
                     return controller;
                 } else {
                     try {

@@ -1,35 +1,45 @@
 package chatroomjavafx;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 public class ChatClient {
 
     private Socket socket;
-    private BufferedReader console;
+    private InputStream console;
+    private BufferedReader consoleReader;
     private DataOutputStream streamOut;
+    private FXMLDocumentController documentController;
     
     public ChatClient(String serverName, int serverPort) throws IOException {
         System.out.println("Establishing connection. Please wait ...");
         socket = new Socket(serverName, serverPort);
         System.out.println("Connected: " + socket);
-        String line = "";
         start();
-        while (!line.equals(".bye")) {
-            line = console.readLine();
-            streamOut.writeUTF(line);
-            streamOut.flush();
-        }
-        stop();
     }
 
     public void start() throws IOException {
         streamOut = new DataOutputStream(socket.getOutputStream());
-        console   = new BufferedReader(new InputStreamReader(System.in));
+    }
+    
+    public String send(InputStream console) throws UnsupportedEncodingException, IOException
+    {
+        this.console = console;
+        consoleReader = new BufferedReader(new InputStreamReader(console, "UTF-8"));
+        String line = "";
+        line = consoleReader.readLine();
+        streamOut.writeUTF(line);
+        streamOut.flush();
+        return line;
+//        stop();
     }
 
     public void stop() throws IOException {

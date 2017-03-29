@@ -7,24 +7,32 @@ package chatroomjavafx;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 /**
  *
@@ -42,29 +50,43 @@ public class FXMLDocumentController implements Initializable {
     private TableColumn<?, ?> users;
 
     @FXML
-    private TextField chatMessage;
+    public TextField chatMessage;
 
     @FXML
-    private TextField chatRoom;
+    public TextField chatRoom;
+    
+    public LoginController.UserName UserName;
+    
+    public void setUser(LoginController.UserName userName) 
+    {
+        this.UserName = userName;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-            // TODO
-//            String hostName = "localhost";
-//            int portNumber = 80;
-//
-//            Socket echoSocket = new Socket(hostName, portNumber);
-//            PrintWriter out = new PrintWriter(echoSocket.getOutputStream(), true);
-//            BufferedReader in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
-//            BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            ChatClient chatClient = new ChatClient("localhost", 1030);
+            send.setOnAction(new EventHandler<ActionEvent>() {
 
-//            String userInput;
-//            while((userInput = stdIn.readLine()) != null)
-//            {
-//                chatRoom.setText(userInput);
-//                chatRoom.setText("echo: " + in.readLine());
-//            }
-//        ChatServer chatServer = new ChatServer();
-//        chatServer.connectToServer();
+                @Override
+                public void handle(ActionEvent event) {
+                    try {
+                        InputStream console = new ByteArrayInputStream(chatMessage.getText().getBytes(StandardCharsets.UTF_8));
+                        String line = "";
+                        while (!line.equals(".bye")) {
+                            line = chatClient.send(console);
+                            chatMessage.setText(line);
+                            chatRoom.appendText(line + "\n");
+                        }
+                    } catch (UnsupportedEncodingException ex) {
+                        Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+        });
+        } catch (IOException ex) {
+            Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

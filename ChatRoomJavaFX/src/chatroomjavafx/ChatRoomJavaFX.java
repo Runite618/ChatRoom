@@ -32,8 +32,6 @@ public class ChatRoomJavaFX extends Application {
     * @param args the command line arguments
     */
    public static void main(String[] args) throws IOException {
-      ChatClient chatClient = new ChatClient("localhost", 135);
-      ChatServer chatServer = new ChatServer(135);
       launch(args);
    }
 

@@ -23,7 +23,7 @@ public class ChatServer {
          serverSocket = new ServerSocket(portNumber);
          System.out.println("Server started: " + serverSocket);
          System.out.println("Waiting for a client ..."); 
-         clientSocket = serverSocket.accept();
+             clientSocket = serverSocket.accept();
          System.out.println("Client accepted: " + clientSocket);
          open();
          boolean done = false;
