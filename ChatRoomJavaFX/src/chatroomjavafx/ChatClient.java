@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets;
 public class ChatClient {
 
     private Socket socket;
-    private InputStream console;
+    public InputStream console;
     private BufferedReader consoleReader;
     private DataOutputStream streamOut;
     private FXMLDocumentController documentController;

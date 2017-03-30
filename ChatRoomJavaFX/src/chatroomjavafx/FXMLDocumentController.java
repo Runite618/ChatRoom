@@ -31,7 +31,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 /**
@@ -40,53 +43,63 @@ import javafx.stage.Stage;
  */
 public class FXMLDocumentController implements Initializable {
 
-    @FXML
-    private Label label;
+   @FXML
+   private Label label;
 
-    @FXML
-    private Button send;
+   @FXML
+   private Button send;
 
-    @FXML
-    private TableColumn<?, ?> users;
+   @FXML
+   private TableColumn<?, ?> users;
 
-    @FXML
-    public TextField chatMessage;
+   @FXML
+   private TableView<LoginController.UserName> usersView;
+   
+   @FXML
+   public TextField chatMessage;
 
-    @FXML
-    public TextField chatRoom;
-    
-    public LoginController.UserName UserName;
-    
-    public void setUser(LoginController.UserName userName) 
-    {
-        this.UserName = userName;
-    }
+   @FXML
+   public TextArea chatRoom;
 
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        try {
-            ChatClient chatClient = new ChatClient("localhost", 1030);
-            send.setOnAction(new EventHandler<ActionEvent>() {
+   public LoginController.UserName UserName;
 
-                @Override
-                public void handle(ActionEvent event) {
-                    try {
-                        InputStream console = new ByteArrayInputStream(chatMessage.getText().getBytes(StandardCharsets.UTF_8));
-                        String line = "";
-                        while (!line.equals(".bye")) {
-                            line = chatClient.send(console);
-                            chatMessage.setText(line);
-                            chatRoom.appendText(line + "\n");
-                        }
-                    } catch (UnsupportedEncodingException ex) {
-                        Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (IOException ex) {
-                        Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-        });
-        } catch (IOException ex) {
-            Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+   public LoginController.UserName getUser()
+   {
+      return UserName;
+   }
+   
+   public void setUser(LoginController.UserName userName) {
+      this.UserName = userName;
+   }
+
+   @Override
+   public void initialize(URL url, ResourceBundle rb) {
+      try {
+         chatMessage.setStyle("-fx-prompt-text-fill: derive(-fx-control-inner-background, -30%);");
+         chatRoom.setStyle("-fx-prompt-text-fill: derive(-fx-control-inner-background, -30%);");
+         ChatClient chatClient = new ChatClient("localhost", 1030);
+         
+         send.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+               try {
+                  DataInputStream console = new DataInputStream(new ByteArrayInputStream(chatMessage.getText().getBytes(StandardCharsets.UTF_8)));
+                  String line = "";
+                  line = chatClient.send(console);
+                  chatMessage.setText("");
+                  chatRoom.appendText(UserName.User.toString() + ": " + line + "\n");
+               } catch (UnsupportedEncodingException ex) {
+                  Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+               } catch (IOException ex) {
+                  Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+               }
+            }
+         });
+         users.setCellValueFactory(new PropertyValueFactory<>("users"));
+         usersView.getItems().add(getUser());
+      } catch (IOException ex) {
+         Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+      }
+   }
 }
