@@ -14,8 +14,8 @@
           <TableColumn fx:id="users" text="Users" />
         </columns>
       </TableView>
-      <TextField fx:id="chatMessage" alignment="CENTER" layoutX="134.0" layoutY="371.0" prefHeight="65.0" prefWidth="358.0" promptText="Enter chat message here" />
+      <TextField fx:id="chatMessage" alignment="CENTER" layoutX="134.0" layoutY="371.0" onAction="#onEnter" prefHeight="65.0" prefWidth="358.0" promptText="Enter chat message here" />
       <Button fx:id="send" layoutX="499.0" layoutY="391.0" mnemonicParsing="false" text="Send" />
-      <TextArea fx:id="chatRoom" layoutX="134.0" layoutY="28.0" prefHeight="317.0" prefWidth="358.0" promptText="Chat message across all users" />
+      <TextArea fx:id="chatRoom" editable="false" layoutX="134.0" layoutY="28.0" prefHeight="317.0" prefWidth="358.0" promptText="Chat message across all users" />
     </children>
 </AnchorPane>

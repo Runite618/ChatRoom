@@ -43,63 +43,79 @@ import javafx.stage.Stage;
  */
 public class FXMLDocumentController implements Initializable {
 
-   @FXML
-   private Label label;
+    @FXML
+    private Label label;
 
-   @FXML
-   private Button send;
+    @FXML
+    private Button send;
 
-   @FXML
-   private TableColumn<?, ?> users;
+    @FXML
+    private TableColumn<LoginController.UserName, String> users;
 
-   @FXML
-   private TableView<LoginController.UserName> usersView;
-   
-   @FXML
-   public TextField chatMessage;
+    @FXML
+    private TableView<LoginController.UserName> usersView;
 
-   @FXML
-   public TextArea chatRoom;
+    @FXML
+    public TextField chatMessage;
 
-   public LoginController.UserName UserName;
+    @FXML
+    public TextArea chatRoom;
 
-   public LoginController.UserName getUser()
-   {
-      return UserName;
-   }
-   
-   public void setUser(LoginController.UserName userName) {
-      this.UserName = userName;
-   }
+    @FXML
+    public void onEnter(ActionEvent ae) throws IOException
+    {
+        send(chatClient);
+        chatMessage.setText("");
+    }
+    
+    public ChatClient chatClient;
+    
+    public LoginController.UserName UserName;
 
-   @Override
-   public void initialize(URL url, ResourceBundle rb) {
-      try {
-         chatMessage.setStyle("-fx-prompt-text-fill: derive(-fx-control-inner-background, -30%);");
-         chatRoom.setStyle("-fx-prompt-text-fill: derive(-fx-control-inner-background, -30%);");
-         ChatClient chatClient = new ChatClient("localhost", 1030);
-         
-         send.setOnAction(new EventHandler<ActionEvent>() {
+    public LoginController.UserName getUser() {
+        return UserName;
+    }
 
-            @Override
-            public void handle(ActionEvent event) {
-               try {
-                  DataInputStream console = new DataInputStream(new ByteArrayInputStream(chatMessage.getText().getBytes(StandardCharsets.UTF_8)));
-                  String line = "";
-                  line = chatClient.send(console);
-                  chatMessage.setText("");
-                  chatRoom.appendText(UserName.User.toString() + ": " + line + "\n");
-               } catch (UnsupportedEncodingException ex) {
-                  Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
-               } catch (IOException ex) {
-                  Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
-               }
-            }
-         });
-         users.setCellValueFactory(new PropertyValueFactory<>("users"));
-         usersView.getItems().add(getUser());
-      } catch (IOException ex) {
-         Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
-      }
-   }
+    public void setUser(LoginController.UserName userName) {
+        this.UserName = userName;
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        try {
+            users.prefWidthProperty().bind(usersView.widthProperty());
+            chatMessage.setStyle("-fx-prompt-text-fill: derive(-fx-control-inner-background, -30%);");
+            
+            chatRoom.setStyle("-fx-prompt-text-fill: derive(-fx-control-inner-background, -30%);");
+            chatClient = new ChatClient("localhost", 1030);
+            
+            send.setOnAction(new EventHandler<ActionEvent>() {
+
+                @Override
+                public void handle(ActionEvent event) {
+                    send(chatClient);
+                }
+            });
+            
+            users.setCellValueFactory(new PropertyValueFactory<LoginController.UserName, String>("userName"));
+            usersView.getItems().add(getUser());
+        } catch (IOException ex) {
+            Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void send(ChatClient chatClient)
+    {
+        try {
+            DataInputStream console = new DataInputStream(new ByteArrayInputStream(chatMessage.getText().getBytes(StandardCharsets.UTF_8)));
+            String line = "";
+            line = chatClient.send(console);
+            chatMessage.setText("");
+            chatRoom.appendText(UserName.getUserName() + ": " + line + "\n");
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -48,10 +49,15 @@ public class LoginController implements Initializable {
 
     public class UserName {
 
-        public String User;
+        public SimpleStringProperty user;
 
         public UserName(String user) {
-            User = user;
+            this.user = new SimpleStringProperty(user);
+        }
+        
+        public String getUserName()
+        {
+            return this.user.get();
         }
     }
 
