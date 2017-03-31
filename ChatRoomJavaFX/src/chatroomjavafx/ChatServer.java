@@ -1,5 +1,6 @@
 package chatroomjavafx;
 
+import chatroomjavafx.LoginController.UserName;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -22,14 +23,15 @@ public class ChatServer {
          System.out.println("Binding to port " + portNumber + ", please wait  ...");
          serverSocket = new ServerSocket(portNumber);
          System.out.println("Server started: " + serverSocket);
-         System.out.println("Waiting for a client ..."); 
-             clientSocket = serverSocket.accept();
+         System.out.println("Waiting for a client ...");
+         clientSocket = serverSocket.accept();
          System.out.println("Client accepted: " + clientSocket);
          open();
          boolean done = false;
+         String userName = UserName.getUserName();
          while (!done) {
             String line = streamIn.readUTF();
-            System.out.println(line);
+            System.out.println(userName + ": " + line);
             done = line.equals(".bye");
          }
          close();

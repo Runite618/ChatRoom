@@ -47,17 +47,22 @@ public class LoginController implements Initializable {
     @FXML
     private Label userEmpty;
 
-    public class UserName {
+    public static class UserName {
 
-        public SimpleStringProperty user;
+        public static SimpleStringProperty user;
 
         public UserName(String user) {
             this.user = new SimpleStringProperty(user);
         }
         
-        public String getUserName()
+        public static String getUserName()
         {
-            return this.user.get();
+            return UserName.user.get();
+        }
+        
+        public void setUserName(String user)
+        {
+            this.user.set(user);
         }
     }
 
