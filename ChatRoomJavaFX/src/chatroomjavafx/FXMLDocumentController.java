@@ -110,8 +110,16 @@ public class FXMLDocumentController implements Initializable {
             DataInputStream console = new DataInputStream(new ByteArrayInputStream(chatMessage.getText().getBytes(StandardCharsets.UTF_8)));
             String line = "";
             line = chatClient.send(console);
+            if(line.contains(".bye"))
+            {
+               chatClient.stop();
+               System.exit(0);
+            }
             chatMessage.setText("");
-            chatRoom.appendText(UserName.getUserName() + ": " + line + "\n");
+            String wholeLine = UserName.getUserName() + ": " + line;
+            String wholeLineN = UserName.getUserName() + ": " + line + "\n";
+            chatClient.writeToUTF(wholeLine);
+            chatRoom.appendText(wholeLineN);
         } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {

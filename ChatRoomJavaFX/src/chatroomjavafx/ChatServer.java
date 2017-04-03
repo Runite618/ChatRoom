@@ -2,8 +2,10 @@ package chatroomjavafx;
 
 import chatroomjavafx.LoginController.UserName;
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -15,8 +17,14 @@ import java.util.logging.Logger;
 public class ChatServer {
 
    private DataInputStream streamIn;
+   private DataOutputStream streamOut;
    private Socket clientSocket;
    private ServerSocket serverSocket;
+   public LoginController.UserName userName;
+
+   public LoginController.UserName getUserName() {
+      return userName;
+   }
 
    public ChatServer(int portNumber) {
       try {
@@ -28,16 +36,14 @@ public class ChatServer {
          System.out.println("Client accepted: " + clientSocket);
          open();
          boolean done = false;
-         String userName = UserName.getUserName();
          while (!done) {
             String line = streamIn.readUTF();
-            System.out.println(userName + ": " + line);
-            done = line.equals(".bye");
+            System.out.println(line);
+            done = line.contains(".bye");
          }
          close();
       } catch (IOException ex) {
-         Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
-
+         System.out.print("Client has terminated connection");
       }
    }
 
@@ -53,9 +59,8 @@ public class ChatServer {
          streamIn.close();
       }
    }
-   
-   public static void main(String[] args)
-   {
+
+   public static void main(String[] args) {
       ChatServer server = new ChatServer(1030);
    }
 }

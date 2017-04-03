@@ -1,5 +1,6 @@
 package chatroomjavafx;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -17,7 +18,6 @@ public class ChatClient {
     public InputStream console;
     private BufferedReader consoleReader;
     private DataOutputStream streamOut;
-    private FXMLDocumentController documentController;
     
     public ChatClient(String serverName, int serverPort) throws IOException {
         System.out.println("Establishing connection. Please wait ...");
@@ -36,10 +36,12 @@ public class ChatClient {
         consoleReader = new BufferedReader(new InputStreamReader(console, "UTF-8"));
         String line = "";
         line = consoleReader.readLine();
-        streamOut.writeUTF(line);
-        streamOut.flush();
         return line;
-//        stop();
+    }
+    
+    public void writeToUTF(String wholeLine) throws IOException
+    {
+       streamOut.writeUTF(wholeLine);
     }
 
     public void stop() throws IOException {
